@@ -8,13 +8,7 @@ import org.eclipse.ui.PlatformUI;
 
 import net.janlibo.dialogs.RunJobDialog;
 
-public class JenkinsBuildCmd extends AbstractHandler {
-
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+abstract class JenkinsBuildCmd extends AbstractHandler {
 
 	protected void executeBuild(final String branchName, final String commitName) {
 		System.out.println("Branch: " + branchName);
