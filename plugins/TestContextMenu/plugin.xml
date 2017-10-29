@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="net.janlibo.commands.BuildBranchCmd"
+            id="net.janlibo.buildBranchCmd"
+            name="Build Branch">
+      </command>
+      <command
+            defaultHandler="net.janlibo.commands.BuildCommitCmd"
+            id="net.janlibo.buildCommitCmd"
+            name="Build Commit">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <command
+               commandId="net.janlibo.buildBranchCmd"
+               label="Build Selected Branch"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="activeMenuSelection">
+                  <and>
+                     <count
+                           value="1">
+                     </count>
+                     <iterate>
+                        <adapt
+                              type="org.eclipse.egit.ui.internal.repository.tree.RefNode">
+                        </adapt>
+                     </iterate>
+                  </and>
+               </with>
+            </visibleWhen>
+         </command>
+         <command
+               commandId="net.janlibo.buildCommitCmd"
+               label="Build Selected Commit"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="activeMenuSelection">
+                  <and>
+                     <count
+                           value="1">
+                     </count>
+                     <iterate>
+                        <adapt
+                              type="org.eclipse.egit.ui.internal.history.SWTCommit">
+                        </adapt>
+                     </iterate>
+                  </and>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="net.janlibo.PreferencePage"
+            id="net.janlibo.preference.page"
+            name="Build Settings">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="net.janlibo.PrefInitializer">
+      </initializer>
+   </extension>
+
+</plugin>
