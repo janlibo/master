@@ -30,6 +30,7 @@ public class RunJob implements Runnable {
 		this.executionFinishedListener = listener;
 		this.branchName = branchName;
 		this.commitName = commitName;
+		this.jobNames = jobNames;
 	}
 
 	@Override

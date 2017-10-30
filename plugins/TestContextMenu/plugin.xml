@@ -22,6 +22,7 @@
             locationURI="popup:org.eclipse.ui.popup.any">
          <command
                commandId="net.janlibo.buildBranchCmd"
+               icon="lib/jenkins_logo_16.ico"
                label="Build Selected Branch"
                style="push">
             <visibleWhen
@@ -43,6 +44,7 @@
          </command>
          <command
                commandId="net.janlibo.buildCommitCmd"
+               icon="lib/jenkins_logo_16.ico"
                label="Build Selected Commit"
                style="push">
             <visibleWhen

@@ -1,5 +1,7 @@
 package net.janlibo.commands;
 
+import java.io.IOException;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.egit.ui.internal.repository.tree.RefNode;
@@ -16,8 +18,14 @@ public class BuildBranchCmd extends JenkinsBuildCmd {
 		Object selectedItem = ((StructuredSelection) selection).getFirstElement();
 		if (selectedItem instanceof RefNode) {
 			RefNode node = (RefNode) selectedItem;
-			// executeBuild(node.getObject().getName(),
-			// node.getObject().getObjectId().getName());
+//			System.out.println("Branch: " + node.getObject().getName() + "; Commit ID: " + node.getObject().getObjectId().getName());
+//			try {
+//				System.out.println(node.getRepository().getBranch());
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+			 executeBuild(node.getObject().getName(), node.getObject().getObjectId().getName());
 		}
 
 		return null;
