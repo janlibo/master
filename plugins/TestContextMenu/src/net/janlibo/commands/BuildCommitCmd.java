@@ -42,6 +42,13 @@ public class BuildCommitCmd extends JenkinsBuildCmd {
 		GitHistoryPage gitHistoryPage = (GitHistoryPage) historyView.getCurrentPage();
 		Object input = gitHistoryPage.getInput();
 		Repository repo = getRepository(input);
+		System.out.println("***** branches in prepository *****");
+		try {
+			System.out.println(repo.getBranch());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		List<Ref> allRefs = CommitMessageViewer_getBranches(repo);
 		Object selectedItem = ((StructuredSelection) selection).getFirstElement();
 		// List<String> refs = new ArrayList<>();
