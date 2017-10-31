@@ -75,13 +75,16 @@ public class RunJob implements Runnable {
 			builder.header("Jenkins-Crumb", jenkinsCrumb);
 		}
 
-		String input = "branch=" + branchName + "&commit=" + commitName + "&delay=0sec&token=simpletoken";
+		//String input = "branch=" + branchName + "&commit=" + commitName + "&delay=0sec&token=simpletoken";
+		String input = "BRANCH_NAME=" + branchName + "&COMMIT_ID=" + commitName + "&delay=0sec";
 		URI uri = UriBuilder.fromPath(input).build();
 		ClientResponse response = builder.post(ClientResponse.class, uri.toString());
 
-		String jsonResponse = response.getEntity(String.class);
+		System.out.println(response.getStatusInfo());
+		
+		//String jsonResponse = response.getEntity(String.class);
 
-		System.out.println("Response:" + jsonResponse);
+		//System.out.println("Response:" + jsonResponse);
 	}
 
 	private String getCrumb(final Client client) {

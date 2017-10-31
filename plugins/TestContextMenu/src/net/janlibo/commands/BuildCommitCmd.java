@@ -14,6 +14,7 @@ import org.eclipse.egit.core.internal.util.ResourceUtil;
 import org.eclipse.egit.ui.internal.history.GitHistoryPage;
 import org.eclipse.egit.ui.internal.history.HistoryPageInput;
 import org.eclipse.egit.ui.internal.repository.tree.RepositoryTreeNode;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
@@ -27,11 +28,10 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.revwalk.RevWalkUtils;
 import org.eclipse.team.internal.ui.history.GenericHistoryView;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 public class BuildCommitCmd extends JenkinsBuildCmd {
-
-	private final static String HEAD_REV_NAME = "HEAD";
 
 	@SuppressWarnings("rawtypes")
 	@Override
@@ -42,28 +42,20 @@ public class BuildCommitCmd extends JenkinsBuildCmd {
 		GitHistoryPage gitHistoryPage = (GitHistoryPage) historyView.getCurrentPage();
 		Object input = gitHistoryPage.getInput();
 		Repository repo = getRepository(input);
-		System.out.println("***** branches in prepository *****");
-		try {
-			System.out.println(repo.getBranch());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
 		List<Ref> allRefs = CommitMessageViewer_getBranches(repo);
 		Object selectedItem = ((StructuredSelection) selection).getFirstElement();
 		// List<String> refs = new ArrayList<>();
-		if (selectedItem instanceof PlotCommit) {
-			AdapterUtils.adapt(selectedItem, RevCommit.class);
+		if (selectedItem instanceof PlotCommit) {			
 			// loopRefs(refs, (PlotCommit) selectedItem);
-			CommitInfoBuilder_format(repo, (PlotCommit) selectedItem, allRefs);
-			System.out.println("Commit Id: " + ((PlotCommit) selectedItem).getId().getName());
-			// for (int i = 0; i < ((PlotCommit) selectedItem).getRefCount();
-			// i++) {
-			// Ref ref = ((PlotCommit) selectedItem).getRef(i);
-			// System.out.println("Ref(" + i + ") - Branch: " + ref.getName());
-			// System.out.println("Ref(" + i + ") - Branch: " +
-			// ref.getObjectId().getName());
-			// }
+			//CommitInfoBuilder_format(repo, (PlotCommit) selectedItem, allRefs);
+			try {
+				final String branch = repo.getBranch();
+				final String commit_id = ((PlotCommit) selectedItem).getId().getName();
+				executeBuild(branch, commit_id);
+			} catch (IOException e) {
+				MessageDialog.openError(PlatformUI.getWorkbench().getDisplay().getActiveShell(), "Branch ERROR", "Cannot determine branch name.");
+			}
 		}
 		return null;
 	}
@@ -137,45 +129,14 @@ public class BuildCommitCmd extends JenkinsBuildCmd {
 	private void loopRefs(List<String> refs, PlotCommit item) {
 		for (int i = 0; i < item.getRefCount(); i++) {
 			Ref ref = item.getRef(i);
-			// if (isUniqueBranch(refs, ref.getName())) {
-			if (ref.getName().contains("/origin/")) {
-				append(refs, ref.getName());
-			}
+			refs.add(ref.getName());
 		}
+
 		if (item.getChildCount() > 0) {
 			for (int i = 0; i < item.getChildCount(); i++) {
 				loopRefs(refs, item.getChild(i));
 			}
 		}
-	}
-
-	private boolean isUniqueBranch(List<String> refs, String ref) {
-		if (ref.equalsIgnoreCase(HEAD_REV_NAME)) {
-			return false;
-		}
-
-		for (String item : refs) {
-			final String itemBranchName = item.contains("/") ? item.substring(item.lastIndexOf("/")) : item;
-			final String refBranchName = ref.contains("/") ? ref.substring(ref.lastIndexOf("/")) : ref;
-			System.out.println("comparing " + itemBranchName + " with " + refBranchName);
-			if (itemBranchName.equalsIgnoreCase(refBranchName)) {
-				if (ref.length() > item.length()) {
-					refs.remove(item);
-					break;
-				}
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	private void append(List<String> refs, String ref) {
-		if (ref.startsWith("refs/")) {
-			ref = ref.replaceFirst("refs/", "");
-		}
-		System.out.println("adding: " + ref);
-		refs.add(ref);
 	}
 
 }
